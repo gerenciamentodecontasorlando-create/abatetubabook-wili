@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abaetebook - Seu Guia de Medicamentos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #1a73e8;
+            --secondary-blue: #63a4ff;
+            --light-blue: #e8f0fe;
+            --dark-blue: #0d47a1;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light-gray: #f8f9fa;
+            --dark-gray: #343a40;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo i {
+            font-size: 2.2rem;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .logo span {
+            color: var(--light-blue);
+            font-weight: 300;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2.5rem;
+        }
+        
+        .hero h2 {
+            font-size: 2.2rem;
+            color: var(--dark-blue);
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.1rem;
+            color: #555;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+        
+        /* Search Section */
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto 3rem;
+        }
+        
+        .search-box {
+            display: flex;
+            background-color: white;
+            border-radius: 50px;
+            padding: 5px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 2px solid var(--light-blue);
+        }
+        
+        .search-box input {
+            flex: 1;
+            border: none;
+            padding: 1.2rem 1.5rem;
+            font-size: 1.1rem;
+            outline: none;
+        }
+        
+        .search-box button {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 0 2.5rem;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            border-radius: 0 50px 50px 0;
+        }
+        
+        .search-box button:hover {
+            background-color: var(--dark-blue);
+        }
+        
+        .search-categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .category-btn {
+            background-color: white;
+            border: 2px solid var(--light-blue);
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .category-btn:hover {
+            background-color: var(--light-blue);
+            transform: translateY(-3px);
+        }
+        
+        /* Results Section */
+        .results-section {
+            display: none;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .results-header h3 {
+            font-size: 1.5rem;
+            color: var(--dark-blue);
+        }
+        
+        .results-count {
+            background-color: var(--light-blue);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .medication-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 1.8rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s;
+            border-left: 5px solid var(--primary-blue);
+        }
+        
+        .medication-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .med-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .med-name {
+            font-size: 1.5rem;
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+        
+        .med-type {
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .med-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .info-section {
+            margin-bottom: 1rem;
+        }
+        
+        .info-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-blue);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-content {
+            padding-left: 1.5rem;
+            color: #555;
+        }
+        
+        .info-list {
+            list-style-type: none;
+        }
+        
+        .info-list li {
+            padding: 0.3rem 0;
+            position: relative;
+        }
+        
+        .info-list li:before {
+            content: "•";
+            color: var(--primary-blue);
+            font-weight: bold;
+            position: absolute;
+            left: -1rem;
+        }
+        
+        .btn-details {
+            display: inline-block;
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 1rem;
+            transition: background 0.3s;
+        }
+        
+        .btn-details:hover {
+            background-color: var(--dark-blue);
+        }
+        
+        /* Features Section */
+        .features-section {
+            margin: 4rem 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            color: var(--dark-blue);
+            margin-bottom: 3rem;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-blue);
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-card h4 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--dark-blue);
+        }
+        
+        /* Warning Box */
+        .warning-box {
+            background-color: #fff3cd;
+            border-left: 5px solid var(--warning);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 3rem 0;
+        }
+        
+        .warning-box h4 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #856404;
+            margin-bottom: 0.8rem;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark-gray);
+            color: white;
+            padding: 3rem 2rem 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-column h4 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: var(--light-blue);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid #555;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                text-align: center;
+                width: 100%;
+                display: none;
+            }
+            
+            nav.active ul {
+                display: flex;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                position: absolute;
+                top: 1.5rem;
+                right: 2rem;
+            }
+            
+            .search-box {
+                flex-direction: column;
+                border-radius: 12px;
+            }
+            
+            .search-box input {
+                padding: 1rem;
+                border-radius: 12px 12px 0 0;
+            }
+            
+            .search-box button {
+                padding: 1rem;
+                border-radius: 0 0 12px 12px;
+            }
+            
+            .med-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-book-medical"></i>
+                <div>
+                    <h1>Abaete<span>book</span></h1>
+                    <p style="font-size: 0.9rem; margin-top: 2px;">Seu guia de medicamentos</p>
+                </div>
+            </div>
+            
+            <button class="mobile-menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <nav id="mainNav">
+                <ul>
+                    <li><a href="#home"><i class="fas fa-home"></i> Início</a></li>
+                    <li><a href="#search"><i class="fas fa-search"></i> Buscar</a></li>
+                    <li><a href="#features"><i class="fas fa-star"></i> Recursos</a></li>
+                    <li><a href="#about"><i class="fas fa-info-circle"></i> Sobre</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <h2>Encontre informações sobre medicamentos de forma rápida e segura</h2>
+            <p>Consulte tratamentos, posologias, efeitos adversos e muito mais. Tudo com base em fontes confiáveis e atualizadas.</p>
+        </section>
+
+        <!-- Search Section -->
+        <section id="search">
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Digite o nome do medicamento, sintoma ou princípio ativo...">
+                    <button id="searchBtn">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                </div>
+                
+                <div class="search-categories">
+                    <button class="category-btn" data-category="analgesico">Analgésicos</button>
+                    <button class="category-btn" data-category="antibiotico">Antibióticos</button>
+                    <button class="category-btn" data-category="anti-inflamatorio">Anti-inflamatórios</button>
+                    <button class="category-btn" data-category="pressao">Pressão Arterial</button>
+                    <button class="category-btn" data-category="diabetes">Diabetes</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section" id="results">
+            <div class="results-header">
+                <h3>Resultados da Busca</h3>
+                <div class="results-count" id="resultsCount">3 medicamentos encontrados</div>
+            </div>
+            
+            <div id="resultsContainer">
+                <!-- Os resultados serão inseridos aqui pelo JavaScript -->
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section" id="features">
+            <h2 class="section-title">Recursos do Abaetebook</h2>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-search-medical"></i>
+                    </div>
+                    <h4>Busca Inteligente</h4>
+                    <p>Encontre medicamentos por nome, sintoma ou princípio ativo com nossa busca avançada.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <h4>Informações Detalhadas</h4>
+                    <p>Acesse tratamentos, posologias, efeitos adversos e contraindicações completas.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h4>Interações Perigosas</h4>
+                    <p>Verifique combinações arriscadas entre medicamentos e com alimentos.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h4>Farmacinha Doméstica</h4>
+                    <p>Controle validade e estoque dos seus medicamentos com alertas inteligentes.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Warning Box -->
+        <div class="warning-box">
+            <h4><i class="fas fa-exclamation-circle"></i> Aviso Importante</h4>
+            <p>O Abaetebook é uma ferramenta informativa. Medicamentos exigem prescrição e acompanhamento profissional. Não se automedique. Consulte sempre um médico ou farmacêutico antes de usar qualquer medicamento.</p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer id="about">
+        <div class="footer-container">
+            <div class="footer-column">
+                <h4>Sobre o Abaetebook</h4>
+                <p>Uma ferramenta desenvolvida para fornecer informações confiáveis sobre medicamentos, promovendo o uso seguro e consciente.</p>
+            </div>
+            
+            <div class="footer-column">
+                <h4>Links Úteis</h4>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-heartbeat"></i> Anvisa - Bulário Eletrônico</a></li>
+                    <li><a href="#"><i class="fas fa-phone-alt"></i> Disque Intoxicação: 0800-722-6001</a></li>
+                    <li><a href="#"><i class="fas fa-hospital"></i> Farmácias 24h Próximas</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h4>Contato</h4>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-envelope"></i> contato@abaetebook.com.br</a></li>
+                    <li><a href="#"><i class="fas fa-phone"></i> (31) 3456-7890</a></li>
+                    <li><a href="#"><i class="fab fa-whatsapp"></i> WhatsApp: (31) 98765-4321</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2023 Abaetebook - Todos os direitos reservados. Este site é apenas para fins educacionais e informativos.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Dados de exemplo dos medicamentos
+        const medications = [
+            {
+                id: 1,
+                name: "Ibuprofeno",
+                type: "Anti-inflamatório não esteroidal",
+                treatment: "Analgesia, anti-inflamatório, antitérmico",
+                form: "Comprimido 400mg",
+                posology: "Adultos: 1 comprimido a cada 6-8 horas. Máximo: 1200mg/dia. Uso por até 3 dias.",
+                sideEffects: "Pode causar dor abdominal, azia, náuseas. Raramente: sangramento gastrointestinal.",
+                contraindications: "Úlcera gástrica ativa, insuficiência renal grave, alergia ao ibuprofeno.",
+                category: "anti-inflamatorio"
+            },
+            {
+                id: 2,
+                name: "Paracetamol",
+                type: "Analgésico e antitérmico",
+                treatment: "Alívio de dor e febre",
+                form: "Comprimido 500mg",
+                posology: "Adultos: 1-2 comprimidos a cada 6 horas. Máximo: 4g/dia. Crianças: conforme peso.",
+                sideEffects: "Em doses normais, geralmente bem tolerado. Overdose pode causar dano hepático.",
+                contraindications: "Hepatopatia grave, alergia ao paracetamol.",
+                category: "analgesico"
+            },
+            {
+                id: 3,
+                name: "Amoxicilina",
+                type: "Antibiótico",
+                treatment: "Infecções bacterianas (respiratórias, urinárias, etc.)",
+                form: "Cápsula 500mg",
+                posology: "Adultos: 1 cápsula a cada 8 horas. Crianças: 25-50mg/kg/dia divididos a cada 8 horas.",
+                sideEffects: "Pode causar diarreia, náuseas, erupções cutâneas.",
+                contraindications: "Alergia a penicilinas, mononucleose infecciosa.",
+                category: "antibiotico"
+            },
+            {
+                id: 4,
+                name: "Losartana",
+                type: "Anti-hipertensivo",
+                treatment: "Hipertensão arterial, proteção renal no diabetes",
+                form: "Comprimido 50mg",
+                posology: "Dose inicial: 50mg uma vez ao dia. Pode ser ajustada até 100mg/dia.",
+                sideEffects: "Tontura, hipotensão, hipercalemia, tosse seca (menos comum que em outros ARAs).",
+                contraindications: "Gravidez, estenose da artéria renal bilateral, alergia à losartana.",
+                category: "pressao"
+            },
+            {
+                id: 5,
+                name: "Metformina",
+                type: "Hipoglicemiante oral",
+                treatment: "Diabetes tipo 2",
+                form: "Comprimido 850mg",
+                posology: "Início: 500mg 2x/dia com refeições. Manutenção: 850mg 2x/dia. Máximo: 2550mg/dia.",
+                sideEffects: "Distúrbios gastrointestinais (náuseas, diarreia), especialmente no início do tratamento.",
+                contraindications: "Insuficiência renal, acidose metabólica, hipersensibilidade à metformina.",
+                category: "diabetes"
+            }
+        ];
+
+        // Elementos DOM
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        const resultsSection = document.querySelector('.results-section');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const resultsCount = document.getElementById('resultsCount');
+        const menuBtn = document.getElementById('menuBtn');
+        const mainNav = document.getElementById('mainNav');
+
+        // Função para buscar medicamentos
+        function searchMedications(query = '', category = '') {
+            let filteredMeds = medications;
+            
+            // Filtro por texto
+            if (query.trim() !== '') {
+                const searchTerm = query.toLowerCase();
+                filteredMeds = filteredMeds.filter(med => 
+                    med.name.toLowerCase().includes(searchTerm) ||
+                    med.treatment.toLowerCase().includes(searchTerm) ||
+                    med.type.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            // Filtro por categoria
+            if (category !== '') {
+                filteredMeds = filteredMeds.filter(med => med.category === category);
+            }
+            
+            // Exibir resultados
+            displayResults(filteredMeds);
+        }
+
+        // Função para exibir resultados
+        function displayResults(meds) {
+            if (meds.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="medication-card" style="text-align: center; padding: 3rem;">
+                        <i class="fas fa-search" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                        <h3 style="color: #666;">Nenhum medicamento encontrado</h3>
+                        <p>Tente buscar por outro termo ou categoria.</p>
+                    </div>
+                `;
+                resultsCount.textContent = "0 medicamentos encontrados";
+            } else {
+                resultsContainer.innerHTML = meds.map(med => `
+                    <div class="medication-card">
+                        <div class="med-header">
+                            <div>
+                                <h3 class="med-name">${med.name}</h3>
+                                <p style="color: #666; margin-top: 5px;">${med.form}</p>
+                            </div>
+                            <span class="med-type">${med.type}</span>
+                        </div>
+                        
+                        <div class="med-content">
+                            <div class="info-section">
+                                <div class="info-title">
+                                    <i class="fas fa-stethoscope"></i>
+                                    <span>TRATAMENTO</span>
+                                </div>
+                                <div class="info-content">
+                                    <p>${med.treatment}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="info-section">
+                                <div class="info-title">
+                                    <i class="fas fa-capsules"></i>
+                                    <span>POSOLOGIA</span>
+                                </div>
+                                <div class="info-content">
+                                    <p>${med.posology}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="info-section">
+                                <div class="info-title">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span>EFEITOS ADVERSOS</span>
+                                </div>
+                                <div class="info-content">
+                                    <p>${med.sideEffects}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="info-section">
+                                <div class="info-title">
+                                    <i class="fas fa-ban"></i>
+                                    <span>CONTRAINDICAÇÕES</span>
+                                </div>
+                                <div class="info-content">
+                                    <p>${med.contraindications}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <a href="#" class="btn-details" data-med-id="${med.id}">
+                            <i class="fas fa-info-circle"></i> Ver detalhes completos
+                        </a>
+                    </div>
+                `).join('');
+                
+                resultsCount.textContent = `${meds.length} medicamento(s) encontrado(s)`;
+            }
+            
+            // Mostrar seção de resultados
+            resultsSection.style.display = 'block';
+            
+            // Rolar até os resultados
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Event Listeners
+        searchBtn.addEventListener('click', () => {
+            const query = searchInput.value;
+            searchMedications(query);
+        });
+
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const query = searchInput.value;
+                searchMedications(query);
+            }
+        });
+
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const category = btn.getAttribute('data-category');
+                searchInput.value = '';
+                searchMedications('', category);
+                
+                // Destacar botão clicado
+                categoryBtns.forEach(b => b.style.backgroundColor = 'white');
+                btn.style.backgroundColor = 'var(--light-blue)';
+            });
+        });
+
+        // Menu mobile
+        menuBtn.addEventListener('click', () => {
+            mainNav.classList.toggle('active');
+            
+            // Alterar ícone do botão
+            if (mainNav.classList.contains('active')) {
+                menuBtn.innerHTML = '<i class="fas fa-times"></i>';
+            } else {
+                menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
+
+        // Inicializar com alguns resultados
+        window.addEventListener('DOMContentLoaded', () => {
+            // Mostrar todos os medicamentos inicialmente
+            displayResults(medications.slice(0, 3));
+            
+            // Adicionar evento aos links de detalhes (simulação)
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('btn-details')) {
+                    e.preventDefault();
+                    const medId = e.target.getAttribute('data-med-id');
+                    alert(`Detalhes completos do medicamento ID: ${medId}\n\nEm uma aplicação real, esta funcionalidade abriria uma página com todas as informações detalhadas do medicamento, incluindo bula completa, interações medicamentosas e precauções específicas.`);
+                }
+            });
+        });
+
+        // Simular busca aleatória para demonstração
+        const searchExamples = ["dor de cabeça", "inflamação", "pressão alta", "diabetes", "infecção"];
+        let exampleIndex = 0;
+        
+        function rotateSearchExample() {
+            searchInput.placeholder = `Exemplo: "${searchExamples[exampleIndex]}" ou nome do medicamento...`;
+            exampleIndex = (exampleIndex + 1) % searchExamples.length;
+        }
+        
+        // Mudar exemplo a cada 5 segundos
+        rotateSearchExample();
+        setInterval(rotateSearchExample, 5000);
+    </script>
+</body>
+</html>
